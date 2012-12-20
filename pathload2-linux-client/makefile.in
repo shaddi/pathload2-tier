@@ -1,0 +1,24 @@
+CC=@PTHREAD_CC@
+
+CFLAGS=@CFLAGS@ @PTHREAD_CFLAGS@ @DEFS@ @THRLIB@
+CPPFLAGS=@CPPFLAGS@
+LIBS=@LIBS@ @PTHREAD_LIBS@
+LDFLAGS=@LDFLAGS@
+
+SOBJS=client.o client_func.o vars.o
+OBJS=$(SOBJS)
+
+TARGETS=pathload2
+
+all:${TARGETS}
+
+pathload2: $(SOBJS)
+	 $(CC) $(SOBJS) -o pathload2 $(LIBS) $(LDFLAGS) $(CFLAGS)
+
+client.o client_func.o: client.h  global.h
+
+clean: 
+	 rm -f ${OBJS} ${TARGETS} config.cache config.log  config.status
+
+distclean: 
+	 rm -f ${OBJS} ${TARGETS} config.cache config.log makefile config.status
