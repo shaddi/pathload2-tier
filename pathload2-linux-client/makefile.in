@@ -10,15 +10,18 @@ OBJS=$(SOBJS)
 
 TARGETS=pathload2
 
-all:${TARGETS}
+all:${TARGETS} tidy
 
 pathload2: $(SOBJS)
 	 $(CC) $(SOBJS) -o pathload2 $(LIBS) $(LDFLAGS) $(CFLAGS)
 
 client.o client_func.o: client.h  global.h
 
-clean: 
+tidy:
+	 rm -f ${OBJS} config.cache config.log  config.status
+
+clean:
 	 rm -f ${OBJS} ${TARGETS} config.cache config.log  config.status
 
-distclean: 
+distclean:
 	 rm -f ${OBJS} ${TARGETS} config.cache config.log makefile config.status
