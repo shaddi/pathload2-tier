@@ -14,7 +14,7 @@
 #include <signal.h>
 #define SELECTPORT 55000 // the port users will be connecting to
 #define BACKLOG 10// how many pending connections queue will hold
-#define NUM_SERVERS 13
+#define NUM_SERVERS 1
 
 void sigchld_handler(int s)
 {
@@ -31,8 +31,8 @@ int main(void)
     int yes=1,i,ctr_code_n;
 	char ctr_buff[8];
 
-    char *serverList[NUM_SERVERS] = {"64.9.225.153","64.9.225.142","64.9.225.166","64.9.225.179","74.63.50.34","74.63.50.40","74.63.50.21",
-"4.71.251.149","4.71.251.175","4.71.251.162","38.102.0.87","38.102.0.85","38.102.0.111"};
+    //char *serverList[NUM_SERVERS] = {"64.9.225.153","64.9.225.142","64.9.225.166","64.9.225.179","74.63.50.34","74.63.50.40","74.63.50.21","4.71.251.149","4.71.251.175","4.71.251.162","38.102.0.87","38.102.0.85","38.102.0.111"};
+    char *serverList[NUM_SERVERS] = {"127.0.0.1"};
 
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket");

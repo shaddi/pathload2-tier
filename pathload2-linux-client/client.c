@@ -53,7 +53,7 @@
 
 l_int32 selectServer()
 {
-	char *selectorList[NUM_SELECT_SERVERS] = {"64.9.225.142","64.9.225.153","64.9.225.166"};
+	char *selectorList[NUM_SELECT_SERVERS] = {"127.0.0.1"};
 	int visited[NUM_SELECT_SERVERS];
 	int num,i;
 	l_int32 ctr_code;
@@ -113,7 +113,7 @@ l_int32 selectServer()
 		}
 		memcpy(&ctr_code, ctr_buff, sizeof(l_int32));
 		num_servers = ntohl(ctr_code);
-	//	printf("\nNo of servers available = %d",num_servers);
+		printf("\nNo of servers available = %d",num_servers);
 		for(i=0;i<num_servers;i++)
 		{
 			bzero(buf,MAXDATASIZE);
@@ -133,7 +133,7 @@ l_int32 selectServer()
 			//serverList[i][size] = '\0';
 		}
 		close(sockfd);
-	
+
 		break;
 	}//end while(1)
 	return 0;
@@ -164,13 +164,13 @@ int main(l_int32 argc, char* argv[])
 	stream_len = STREAM_LEN ;
 	exp_flag = 1;
 	num=0;
-	snd_time_interval=0; 
+	snd_time_interval=0;
 	converged_gmx_rmx = 0 ;
 	converged_gmn_rmn = 0 ;
 	converged_rmn_rmx = 0 ;
 	counter = 0 ;
 	prev_actual_rate = 0;
-	prev_req_rate = 0 ; 
+	prev_req_rate = 0 ;
 	cur_actual_rate = 0 ;
 	cur_req_rate = 0 ;
 	gettimeofday(&exp_start_time, NULL);
@@ -182,29 +182,29 @@ int main(l_int32 argc, char* argv[])
 	bzero(result,512);
 	bzero(result1,512);
 	quiet=0;
-	
+
 	c=getopt(argc,argv,"vV");
 	if(c=='v'|| c=='V')
 	{
 		verbose = 1;
 		Verbose = 1;
 	}
-	//struct sigaction sigstruct;	
+	//struct sigaction sigstruct;
 //	WSAStartup(MAKEWORD(2,2),&wsa);
 //	QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
 	srand(exp_start_time.tv_usec);
-	
+
 /*	 Create a waitable timer.
     hTimer = CreateWaitableTimer(NULL, TRUE, L"WaitableTimer");
     if (NULL == hTimer)
     {
         printf("CreateWaitableTimer failed (%d)\n", GetLastError());
         return 1;
-  	
+
 */
 	num_stream = NUM_STREAM ;
 	min_sleeptime();
-	
+
 	/* gettimeofday latency */
 	for(i=0;i<30;i++)
 	{
@@ -213,8 +213,8 @@ int main(l_int32 argc, char* argv[])
 		latency[i]=tv2.tv_sec*1000000+tv2.tv_usec-tv1.tv_sec*1000000-tv1.tv_usec;
 	}
 	order_int(latency,ord_latency,30);
-	gettimeofday_latency = ord_latency[15];  
-	
+	gettimeofday_latency = ord_latency[15];
+
 	iterate = 1;
 //	guidlg->m_cTextout.SetWindowTextW(L"Connecting to selected M-lab server.");
 	printf("Connecting to selected M-lab server.");
@@ -224,7 +224,7 @@ int main(l_int32 argc, char* argv[])
 	bzero(visited,num_servers);
 
 	while(1)
-	{	
+	{
 		int flag = 0;
 		for(i = 0;i<num_servers;i++)
 		{
@@ -235,7 +235,7 @@ int main(l_int32 argc, char* argv[])
 			}
 		}
 		if(!flag) {
-			printf("\nAll servers are busy.\nPlease try again later.\n");
+			printf("\nAll servers are busy, yo.\nPlease try again later.\n");
 	//		guidlg->m_cTextout.SetWindowTextW(L"Could not connect to server");
 			free(visited);
 			return -1;
@@ -245,8 +245,8 @@ int main(l_int32 argc, char* argv[])
 			continue;
 		visited[num] = 1;
 		strcpy(hostname,serverList[num]);
-	//	printf("\nTrying to connect %s\n",hostname);
-		if(client_TCP_connection()==-1)	
+		printf("\nTrying to connect %s\n",hostname);
+		if(client_TCP_connection()==-1)
 			continue;
 		break;
 	}
@@ -278,10 +278,10 @@ int main(l_int32 argc, char* argv[])
 //	ct->m_cList.PostMessageW(WM_VSCROLL, SB_BOTTOM, 0);
 	fflush(stdout);
 	do{
-		
+
 		mss = 0;
 		snd_max_pkt_sz = mss;
-		if (snd_max_pkt_sz == 0 || snd_max_pkt_sz== 1448) 
+		if (snd_max_pkt_sz == 0 || snd_max_pkt_sz== 1448)
 			snd_max_pkt_sz = 1472;   /* Make it Ethernet sized MTU */
 		else
 			snd_max_pkt_sz = mss+12;
@@ -311,7 +311,7 @@ int main(l_int32 argc, char* argv[])
 
 		// wait for receiver to start ADR measurement ****
 		if((ret_val=recv_ctr_mesg(ctr_buff)) == -1 )break;
-		if ( (((ret_val & CTR_CODE) >> 31) == 1) && ((ret_val & 0x7fffffff) == SEND_TRAIN ) ) 
+		if ( (((ret_val & CTR_CODE) >> 31) == 1) && ((ret_val & 0x7fffffff) == SEND_TRAIN ) )
 		{
 			if ( quiet)
 				printf("\nEstimating ADR to initialize rate adjustment algorithm => ");
@@ -324,11 +324,11 @@ int main(l_int32 argc, char* argv[])
 		fleet_id=0;
 		done=0;
 		exp_fleet_id = 0;
-		// Start avail-bw measurement 
+		// Start avail-bw measurement
 		while(!done)
 		{
 			if (( ret_val  = recv_ctr_mesg ( ctr_buff ) ) == -1 ) break;
-			if((((ret_val & CTR_CODE) >> 31) == 1) &&((ret_val&0x7fffffff) == TERMINATE)) 
+			if((((ret_val & CTR_CODE) >> 31) == 1) &&((ret_val&0x7fffffff) == TERMINATE))
 			{
 				if(verbose)
 					printf("\nTerminating current run.\n");
@@ -346,23 +346,23 @@ int main(l_int32 argc, char* argv[])
 					break;
 				if ((ret_val = recv_ctr_mesg ( ctr_buff )) == -1 )
 					break;
-				// ret_val = SEND_FLEET 
+				// ret_val = SEND_FLEET
 				ctr_code = RECV_FLEET | CTR_CODE ;
-				if ( send_ctr_mesg(ctr_buff,  ctr_code  ) == -1 ) 
+				if ( send_ctr_mesg(ctr_buff,  ctr_code  ) == -1 )
 					break;
-				ret_val = send_fleet(); 
+				ret_val = send_fleet();
 				if(ret_val == -1)
 					break;
-				
+
 				if ( !quiet) printf("\n");
 				fleet_id++ ;
 			}
 		}
-		
+
 //	((CGuiDlg *)t)->m_cProgress.SetPos(50);
 
 /*	Opp direction code here (Lin-Win)	*/
-		printf("\nMeasuring Downstream Available Bandwidth");	
+		printf("\nMeasuring Downstream Available Bandwidth");
 //		ct->m_cList.AddString(L"Measuring Downstream Available Bandwidth");
 //		ct->m_cList.PostMessageW(WM_VSCROLL, SB_BOTTOM, 0);
 		gettimeofday(&exp_start_time, NULL);
@@ -377,8 +377,8 @@ int main(l_int32 argc, char* argv[])
 		min_rate = (MIN_PKT_SZ+28) * 8./ MAX_TIME_INTERVAL ;
 		if(Verbose)
 			printf("  Max rate(max_pktsz/min_time) :: %.2fMbps\n",max_rate);
-		
-		// Estimate ADR 
+
+		// Estimate ADR
 		adr = get_adr() ;
 		/*if ( bw_resol == 0 && adr != 0 )
 			bw_resol = (float)(.02*adr) ;
@@ -387,7 +387,7 @@ int main(l_int32 argc, char* argv[])
 		if(Verbose)
 			printf("  Grey bandwidth resolution    :: %.2f\n",grey_bw_resolution());
 		//fprintf(pathload_fp,"  Grey bandwidth resolution    :: %.2f\n",grey_bw_resolution());
-		
+
 		if (interrupt_coalescence)
 		{
 			bw_resol = (float)(.05*adr);
@@ -398,14 +398,14 @@ int main(l_int32 argc, char* argv[])
 
 		if ( adr == 0 || adr > max_rate || adr < min_rate)
 			tr = (max_rate+min_rate)/2.;
-		else 
-			tr = adr ;					
+		else
+			tr = adr ;
 //		printf("\nReverse ADR Done\n");
 
 		/* Estimate the reverse available bandwidth.*/
 		transmission_rate = (l_uint32)rint(1000000 * tr);
 		max_rate_flag = 0 ;
-		min_rate_flag = 0 ; 
+		min_rate_flag = 0 ;
 
 		while (1)	//inner while(1)
 		{
@@ -437,11 +437,11 @@ int main(l_int32 argc, char* argv[])
 			while (1)
 			{
 			  ret_val = recv_ctr_mesg(ctr_buff);
-			  if ((((ret_val & CTR_CODE) >> 31) == 1) &&    
-				   ((ret_val & 0x7fffffff) == RECV_FLEET )) 
+			  if ((((ret_val & CTR_CODE) >> 31) == 1) &&
+				   ((ret_val & 0x7fffffff) == RECV_FLEET ))
 				break ;
-			  else if ( (((ret_val & CTR_CODE) >> 31) == 1) &&    
-						 ((ret_val & 0x7fffffff) == FINISHED_STREAM )) 
+			  else if ( (((ret_val & CTR_CODE) >> 31) == 1) &&
+						 ((ret_val & 0x7fffffff) == FINISHED_STREAM ))
 				ret_val = recv_ctr_mesg(ctr_buff);
 			}
 
@@ -452,7 +452,7 @@ int main(l_int32 argc, char* argv[])
 				printf("Broken connection to server.\nPlease try again later.");
 				return -1;
 			}
-			
+
 			else if (ret == -1)
 			{
 			  if ( !increase_stream_len )
@@ -478,7 +478,7 @@ int main(l_int32 argc, char* argv[])
 				terminate_gracefully(exp_start_time,0) ;
 				break;
 			  }
-			  else if(( trend == -1 && bad_fleet_cs && retry_fleet_cnt_cs <= NUM_RETRY_CS )) //* repeat fleet with current rate. 
+			  else if(( trend == -1 && bad_fleet_cs && retry_fleet_cnt_cs <= NUM_RETRY_CS )) //* repeat fleet with current rate.
 				continue ;
 
 			  if (trend != GREY)
@@ -535,7 +535,7 @@ int main(l_int32 argc, char* argv[])
 //	ct->m_cList.AddString(L"");
 //	ct->m_cList.PostMessageW(WM_VSCROLL, SB_BOTTOM, 0);
 //	ct->m_cList.AddString(L"Downstream Measurement");
-//	
+//
 //	tok = strtok (result1,"#");
 //	ct->m_cList.AddString(CString(tok));
 //	while (tok != NULL)
@@ -544,7 +544,7 @@ int main(l_int32 argc, char* argv[])
 //		if(tok){
 //		printf("%s\n",tok);
 //		ct->m_cList.AddString(CString(tok));}
-//		
+//
 //	}
 //	ct->m_cList.AddString(L"");
 //	ct->m_cList.PostMessageW(WM_VSCROLL, SB_BOTTOM, 0);

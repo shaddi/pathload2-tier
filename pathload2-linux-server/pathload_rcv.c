@@ -5,17 +5,17 @@ Pathload is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
-	
+
 pathload is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-		
+
 You should have received a copy of the GNU General Public License
 along with pathload; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-		   
+
 /*-------------------------------------------------
 	pathload : an end-to-end available bandwidth
 			   estimation tool
@@ -47,7 +47,7 @@ void rcv_func(int flag)
 		l_int32 ctr_code;
 		l_int32 trend, prev_trend = 0;
 		l_int32 opt_len, mss,i;
-		l_int32 ret_val ; 
+		l_int32 ret_val ;
 		l_int32 errflg=0;
 		char ctr_buff[8], myname[50], buff[26];
 		l_int32 ret=0;
@@ -65,7 +65,7 @@ void rcv_func(int flag)
 	stream_len = STREAM_LEN ;
 	exp_flag = 1;
 	num=0;
-	snd_time_interval=0; 
+	snd_time_interval=0;
 	counter = 0 ;
 	converged_gmx_rmx = 0 ;
 	converged_gmx_rmx = 0 ;
@@ -74,11 +74,11 @@ void rcv_func(int flag)
 	converged_gmn_rmn_tm = 0 ;
 	converged_rmn_rmx_tm = 0 ;
 	prev_actual_rate = 0;
-	prev_req_rate = 0 ; 
+	prev_req_rate = 0 ;
 	cur_actual_rate = 0 ;
 	cur_req_rate = 0 ;
-	verbose=0;
-	Verbose = 0;
+	verbose=1;
+	Verbose = 1;
 	bw_resol=1;
 	netlog=0;
 	increase_stream_len=0;
@@ -108,11 +108,11 @@ void rcv_func(int flag)
     account MTU of intermediate routers.
   */
   	strcpy(filename,"pathload2/");
-	
+
 	struct tm *now = NULL;
 	time_t tval = 0;
 	tval = time(NULL);
-	now = localtime(&tval); 
+	now = localtime(&tval);
 
 	sprintf(dt,"%d/",1900+now->tm_year);
 	strcat(filename,dt);
@@ -137,14 +137,14 @@ void rcv_func(int flag)
 	strcat(myname,filename);
 	system(myname);
 //	exit(0);
-	ret = init_TCP_connection();	
-	if(ret == -1) 
+	ret = init_TCP_connection();
+	if(ret == -1)
 	{
 		continue;
 	}
 
 	ret = init_UDP_connection();
-	if(ret == -1) 
+	if(ret == -1)
 	{
 		close(sock_tcp);
 		continue;
@@ -169,7 +169,7 @@ void rcv_func(int flag)
 	strcat(filename,".log");
 	strncpy(buff, ctime(&(exp_start_time.tv_sec)), 24);
   	buff[24] = '\0';
-	
+
 	if((pathload_fp = fopen(filename,"a")) == NULL)
 	{
 		printf("\nProblem with opening File %d",errno);
@@ -197,7 +197,7 @@ void rcv_func(int flag)
 	}
 
 	rcv_max_pkt_sz = mss;
-	if (rcv_max_pkt_sz == 0 || rcv_max_pkt_sz == 1448 ) 
+	if (rcv_max_pkt_sz == 0 || rcv_max_pkt_sz == 1448 )
 		rcv_max_pkt_sz = 1472;   //* Make it Ethernet sized MTU *
 	else
 		rcv_max_pkt_sz = mss+12;
@@ -225,7 +225,7 @@ void rcv_func(int flag)
 	}
 	if(Verbose) printf("\nClients max packet size = %ld\n",snd_max_pkt_sz);
 	fprintf(pathload_fp,"\nClients max packet size = %ld\n",snd_max_pkt_sz);
-	
+
 
 	send_ctr_mesg(ctr_buff, rcv_max_pkt_sz);
 	max_pkt_sz = (rcv_max_pkt_sz < snd_max_pkt_sz) ? rcv_max_pkt_sz:snd_max_pkt_sz ;
@@ -233,7 +233,7 @@ void rcv_func(int flag)
 	if (Verbose)
 		printf("  Maximum packet size          :: %ld bytes\n",max_pkt_sz);
 	fprintf(pathload_fp,"  Maximum packet size          :: %ld bytes\n",max_pkt_sz);
-	
+
 	rcv_latency = (l_int32) recvfrom_latency(server_udp_addr);//rcv_udp_addr
 	snd_latency = recv_ctr_mesg(sock_tcp, ctr_buff);
 	if(snd_latency == DISCONNECTED)
@@ -265,16 +265,16 @@ void rcv_func(int flag)
 		printf("  Max rate(max_pktsz/min_time) :: %.2fMbps\n",max_rate);
 	fprintf(pathload_fp,"  Max rate(max_pktsz/min_time) :: %.2fMbps\n",max_rate);
 
-	// Estimate ADR 
+	// Estimate ADR
 	adr = get_adr() ;
 	if ( bw_resol == 0 && adr != 0 )
 		bw_resol = .02*adr ;
 	else if (bw_resol == 0 )
-		bw_resol = 2 ; 
+		bw_resol = 2 ;
 	if(Verbose)
 		printf("  Grey bandwidth resolution    :: %.2f\n",grey_bw_resolution());
 	fprintf(pathload_fp,"  Grey bandwidth resolution    :: %.2f\n",grey_bw_resolution());
-  
+
 	if (interrupt_coalescence)
 	{
 		bw_resol = .05*adr;
@@ -285,13 +285,13 @@ void rcv_func(int flag)
 	}
 	if ( adr == 0 || adr > max_rate || adr < min_rate)
 		tr = (max_rate+min_rate)/2.;
-	else 
+	else
 		tr = adr ;
 
 	//* eSTIMate the available bandwidth.
 	transmission_rate = (l_uint32)rint(1000000 * tr);
 	max_rate_flag = 0 ;
-	min_rate_flag = 0 ; 
+	min_rate_flag = 0 ;
 	fflush(pathload_fp);
 
 	sigemptyset(&sigstruct.sa_mask);
@@ -331,11 +331,11 @@ void rcv_func(int flag)
     while (1)
     {
       ret_val = recv_ctr_mesg(sock_tcp, ctr_buff);
-      if ((((ret_val & CTR_CODE) >> 31) == 1) &&    
-           ((ret_val & 0x7fffffff) == RECV_FLEET )) 
+      if ((((ret_val & CTR_CODE) >> 31) == 1) &&
+           ((ret_val & 0x7fffffff) == RECV_FLEET ))
         break ;
-      else if ( (((ret_val & CTR_CODE) >> 31) == 1) &&    
-                 ((ret_val & 0x7fffffff) == FINISHED_STREAM )) 
+      else if ( (((ret_val & CTR_CODE) >> 31) == 1) &&
+                 ((ret_val & 0x7fffffff) == FINISHED_STREAM ))
         ret_val = recv_ctr_mesg(sock_tcp, ctr_buff);
 	  if(ret_val == DISCONNECTED)
 	  break;
@@ -365,13 +365,13 @@ void rcv_func(int flag)
     {
       get_sending_rate() ;
       trend = aggregate_trend_result();
-      
+
       if ( trend == -1 && bad_fleet_cs && retry_fleet_cnt_cs >NUM_RETRY_CS )
       {
         terminated = terminate_gracefully(exp_start_time,0) ;
 		break;
       }
-      else if(( trend == -1 && bad_fleet_cs && retry_fleet_cnt_cs <= NUM_RETRY_CS )) //* repeat fleet with current rate. 
+      else if(( trend == -1 && bad_fleet_cs && retry_fleet_cnt_cs <= NUM_RETRY_CS )) //* repeat fleet with current rate.
         continue ;
 
       if (trend != GREY)
@@ -387,7 +387,7 @@ void rcv_func(int flag)
 	 }
     }
 	fflush(pathload_fp);
-  }	//end inner while(1)	
+  }	//end inner while(1)
 
   if(ret_val == DISCONNECTED || ret == DISCONNECTED)
   continue;
@@ -395,7 +395,7 @@ void rcv_func(int flag)
 //------------------------Start the reverse measurements
 	num_stream = NUM_STREAM ;
 	min_sleeptime();
-	
+
 	/* gettimeofday latency */
 	for(i=0;i<30;i++)
 	{
@@ -404,7 +404,7 @@ void rcv_func(int flag)
 		latency[i]=tv2.tv_sec*1000000+tv2.tv_usec-tv1.tv_sec*1000000-tv1.tv_usec;
 	}
 	order_int(latency,ord_latency,30);
-	gettimeofday_latency = ord_latency[15];  
+	gettimeofday_latency = ord_latency[15];
 
 
 	if(connect(sock_udp, (struct sockaddr *)&client_udp_addr, sizeof(client_udp_addr)) <0)
@@ -421,12 +421,12 @@ void rcv_func(int flag)
 	if((ret_val=recv_ctr_mesg(sock_tcp, ctr_buff)) == -1 )break;
 	else if(ret_val==DISCONNECTED)break;
 
-    if ( (((ret_val & CTR_CODE) >> 31) == 1) && ((ret_val & 0x7fffffff) == SEND_TRAIN ) ) 
+    if ( (((ret_val & CTR_CODE) >> 31) == 1) && ((ret_val & 0x7fffffff) == SEND_TRAIN ) )
     {
       if ( !quiet)
         printf("Estimating ADR to initialize rate adjustment algorithm => ");
 //		fprintf(pathload_fp,"Estimating ADR to initialize rate adjustment algorithm => ");
-		
+
       if ( send_train() == -1 ) continue ;
       if ( !quiet)
         printf("ADR Done\n");
@@ -442,12 +442,12 @@ void rcv_func(int flag)
       if (( ret_val  = recv_ctr_mesg (sock_tcp, ctr_buff ) ) == -1 ) break ;
 	  else if(ret_val==DISCONNECTED)break;
 
-      if((((ret_val & CTR_CODE) >> 31) == 1) &&((ret_val&0x7fffffff) == TERMINATE)) 
+      if((((ret_val & CTR_CODE) >> 31) == 1) &&((ret_val&0x7fffffff) == TERMINATE))
       {
         if ( !quiet)
           printf("Terminating current run.\n");
 		fprintf(pathload_fp,"Terminating current run.\n");
-		  recv_result(sock_tcp); 
+		  recv_result(sock_tcp);
         done=1;
       }
       else
@@ -465,7 +465,7 @@ void rcv_func(int flag)
         if ( send_ctr_mesg1(ctr_buff,  ctr_code  ) == -1 ) break;
 
         if(send_fleet()==-1) break ;
-        if ( !quiet) printf("\n"); 
+        if ( !quiet) printf("\n");
 		fprintf(pathload_fp,"\n");
         fleet_id++ ;
       }

@@ -99,7 +99,7 @@ int client_UDP_connection()
 {
 	memset(&server_udp_addr,0, sizeof(server_udp_addr));
 	server_udp_addr.sin_family = AF_INET;
-	server_udp_addr.sin_port = htons(UDPRCV_PORT);
+	server_udp_addr.sin_port = htons(SERVER_UDPRCV_PORT);
 
 	if ((host_rcv = gethostbyname(hostname)) == 0)
 	{
@@ -184,7 +184,7 @@ int send_ctr_mesg(char *ctr_buff, l_int32 ctr_code)
 	if (send(sock_tcp, ctr_buff, sizeof(l_int32), 0) == -1)
 	{
 	//	guidlg->m_cTextout.SetWindowTextW(L"Connection to the server lost");
-		printf("\nConnection to the server lost\nMake sure Pathload is running at server\n");
+		printf("\nConnection to the server lost (187)\nMake sure Pathload is running at server\n");
 		exit (0) ; 
 	}
 	else 

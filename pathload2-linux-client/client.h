@@ -63,7 +63,7 @@
 
 #define SELECTPORT 55000 // the port client will be connecting to
 #define MAXDATASIZE 25 // max number of bytes we can get at once
-#define NUM_SELECT_SERVERS 3
+#define NUM_SELECT_SERVERS 1
 
 EXTERN int send_fleet() ;
 EXTERN int send_train();
