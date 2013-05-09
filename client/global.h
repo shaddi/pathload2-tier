@@ -72,7 +72,7 @@ typedef unsigned int l_uint32 ;
 #define NEW				101
 
 /* Port numbers (UDP for receiver, TCP for sender) */
-#define UDPRCV_PORT         55003
+#define UDPRCV_PORT         55001
 #define SERVER_UDPRCV_PORT  55001
 #define TCPSND_PORT         55002
 #define UDP_BUFFER_SZ       400000    /* bytes */

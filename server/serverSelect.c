@@ -32,7 +32,7 @@ int main(void)
 	char ctr_buff[8];
 
     //char *serverList[NUM_SERVERS] = {"64.9.225.153","64.9.225.142","64.9.225.166","64.9.225.179","74.63.50.34","74.63.50.40","74.63.50.21","4.71.251.149","4.71.251.175","4.71.251.162","38.102.0.87","38.102.0.85","38.102.0.111"};
-    char *serverList[NUM_SERVERS] = {"127.0.0.1"};
+    char *serverList[NUM_SERVERS] = {"harpua.cs.berkeley.edu"};
 
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("socket");
@@ -50,7 +50,7 @@ int main(void)
         perror("bind");
         exit(1);
     }
-    
+
     if (listen(sockfd, BACKLOG) == -1) {
         perror("listen");
         exit(1);
@@ -74,7 +74,7 @@ int main(void)
 
         printf("server: got connection from %s\n",
         inet_ntoa(their_addr.sin_addr));
-        
+
         if (!fork()) { // this is the child process
  // child doesn’t need the listener
 		close(sockfd);

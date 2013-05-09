@@ -2194,8 +2194,7 @@ int init_UDP_connection()
 	bzero((char *) &server_udp_addr, sizeof(server_udp_addr));
 	server_udp_addr.sin_family = AF_INET; // host byte order
 	server_udp_addr.sin_port = htons(UDPRCV_PORT); // short, network byte order
-	//server_udp_addr.sin_addr.s_addr = INADDR_ANY; // automatically fill with my IP
-	server_udp_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server_udp_addr.sin_addr.s_addr = INADDR_ANY; // automatically fill with my IP
 
 	if (bind(sock_udp, (struct sockaddr *)&server_udp_addr,sizeof(struct sockaddr)) == -1)
 	{

@@ -53,7 +53,7 @@
 
 l_int32 selectServer()
 {
-	char *selectorList[NUM_SELECT_SERVERS] = {"localhost"};
+	char *selectorList[NUM_SELECT_SERVERS] = {"harpua.cs.berkeley.edu"};
 	int visited[NUM_SELECT_SERVERS];
 	int num,i;
 	l_int32 ctr_code;
